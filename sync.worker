@@ -1,0 +1,6 @@
+# define the runtime language
+runtime "python"
+stack "python-2.7"
+pip "ParsePy"
+exec "sync.py"
+remote
