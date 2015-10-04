@@ -35,8 +35,6 @@ for key, value in dict.iteritems():
 
 	url = root + value
 
-	print key, url
-
 	response = urllib2.urlopen(url).read().decode('utf8')
 
 	data = json.loads(response)
