@@ -10,8 +10,8 @@ import json,httplib
 import urllib2
 
 
-APPLICATION_ID = "nxkxfDhpFQBXOReTPFIPhGIaYowmT5uuscj3w3Kb"
-REST_API_KEY = "6UXzStOsl61BtH2Y905HYkNDeObZ4iQqz0Pu1TRO"
+APPLICATION_ID = "6M0xS8A8uaqXbGGP8GAVFCw8ah7B6cif0NlZhYm6"
+REST_API_KEY = "ASDpoFdwFAdbRlI6bAH7X0onYK5xuE8XWwL9uafm"
 
 urlTaipei = 'http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=8f2e2264-6eab-451f-a66d-34aa2a0aa7b1'
 urlNewTaipei = 'http://data.ntpc.gov.tw/od/data/api/EDC3AD26-8AE7-4916-A00B-BC6048D19BF8?$format=json'
@@ -32,8 +32,12 @@ items = data["result"]["results"]
 for item in items:
 	#print item['CarTime'],item['CarTime'][0:item['CarTime'].index(':')]
 	#print item['Address'],item['CarTime'],item['Region'],item['Li'],item['Lat'],item['Lng']
+
+	carTime=item['CarTime'].replace(u'：',':')
+	strHour=carTime[0:carTime.index(':')]
+
 	truck=TruckSTG(city='Taipei',region=item['Li'],address=item['Address'],lineid='',line=item['CarNumber'],carno=item['CarNo']
-		,time=item['CarTime'],hour=item['CarTime'][0:item['CarTime'].index(':')],memo=item['DepName']
+		,time=item['CarTime'],hour=strHour,memo=item['DepName']
 		,garbage_sun='N',garbage_mon='Y',garbage_tue='Y',garbage_wed='N',garbage_thu='Y',garbage_fri='Y',garbage_sat='Y'
 		,recycling_sun='N',recycling_mon='Y',recycling_tue='Y',recycling_wed='N',recycling_thu='Y',recycling_fri='Y',recycling_sat='Y'
 		,foodscraps_sun='N',foodscraps_mon='Y',foodscraps_tue='Y',foodscraps_wed='N',foodscraps_thu='Y',foodscraps_fri='Y',foodscraps_sat='Y')
