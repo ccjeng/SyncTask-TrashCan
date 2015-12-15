@@ -85,7 +85,7 @@ for item in items:
 	strHour=carTime[0:carTime.index(':')]
 	locationString=ast.literal_eval('{"__type": "GeoPoint", "longitude":' + str(float(item['Lng'])) + ',"latitude":' + str(float(item['Lat'])) + ' }')
 	#print loc
-	t = Truck('Taipei',item['Li'],item['Address'],'',item['CarNumber'],item['CarNo'],item['CarTime'],strHour,item['DepName']
+	t = Truck('Taipei',item['Region'],item['Address'],'',item['CarNumber'],item['CarNo'],item['CarTime'],strHour,item['DepName']
 		,'N','Y','Y','N','Y','Y','Y'
 		,'N','Y','Y','N','Y','Y','Y'
 		,'N','Y','Y','N','Y','Y','Y'
@@ -106,8 +106,18 @@ for top in urlNewTaipeiList:
 	#import data
 	for item in items:
 		strHour=item['time'][0:item['time'].index(':')]
-		locationString=ast.literal_eval('{"__type": "GeoPoint", "longitude":' + str(float(item['longitude'])) + ',"latitude":' + str(float(item['latitude'])) + ' }')
-		t = Truck('NewTaipei',item['village'],item['name'],item['lineid'],item['linename'],item['rank'],item['time'],strHour,item['memo']
+
+		longitude=float(item['longitude'])
+		latitude=float(item['latitude'])
+		#Fix error location data
+		if latitude>100:
+			longitude=float(item['latitude'])
+			latitude=float(item['longitude'])
+			print item['village']+' '+item['time']+ ' ' +str(longitude) + ' ' + str(latitude) 
+
+		locationString=ast.literal_eval('{"__type": "GeoPoint", "longitude":' + str(longitude) + ',"latitude":' + str(latitude) + ' }')
+
+		t = Truck('NewTaipei',item['city'],item['name'],item['lineid'],item['linename'],item['rank'],item['time'],strHour,item['memo']
 			,(item['garbage_sun'] if item['garbage_sun']=='Y' else 'N')
 			,(item['garbage_mon'] if item['garbage_mon']=='Y' else 'N')
 			,(item['garbage_tue'] if item['garbage_tue']=='Y' else 'N')
