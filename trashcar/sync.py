@@ -82,7 +82,7 @@ items = data["result"]["results"]
 
 for item in items:
 	carTime=item['CarTime'].replace(u'：',':')
-	strHour=carTime[0:carTime.index(':')]
+	strHour=str(int(carTime[0:carTime.index(':')]))
 	locationString=ast.literal_eval('{"__type": "GeoPoint", "longitude":' + str(float(item['Lng'])) + ',"latitude":' + str(float(item['Lat'])) + ' }')
 	#print loc
 	t = Truck('Taipei',item['Region'],item['Address'],'',item['CarNumber'],item['CarNo'],item['CarTime'],strHour,item['DepName']
@@ -105,7 +105,7 @@ for top in urlNewTaipeiList:
 
 	#import data
 	for item in items:
-		strHour=item['time'][0:item['time'].index(':')]
+		strHour=str(int(item['time'][0:item['time'].index(':')]))
 
 		longitude=float(item['longitude'])
 		latitude=float(item['latitude'])
