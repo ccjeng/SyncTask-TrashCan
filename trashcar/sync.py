@@ -85,7 +85,7 @@ for item in items:
 	strHour=str(int(carTime[0:carTime.index(':')]))
 	locationString=ast.literal_eval('{"__type": "GeoPoint", "longitude":' + str(float(item['Lng'])) + ',"latitude":' + str(float(item['Lat'])) + ' }')
 	#print loc
-	t = Truck('Taipei',item['Region'],item['Address'],'',item['CarNumber'],item['CarNo'],item['CarTime'],strHour,item['DepName']
+	t = Truck('Taipei',item['Region'],item['Address'],'',item['CarNo'],item['CarNumber'],item['CarTime'],strHour,item['DepName']
 		,'N','Y','Y','N','Y','Y','Y'
 		,'N','Y','Y','N','Y','Y','Y'
 		,'N','Y','Y','N','Y','Y','Y'
