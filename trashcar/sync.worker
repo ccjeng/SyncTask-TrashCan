@@ -1,5 +1,0 @@
-runtime "python"
-stack "python-2.7"
-pip "ParsePy"
-exec "sync.py"
-full_remote_build true

@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*- 
 
-import codecs, json,httplib
-import urllib2
+import codecs, json
+import requests
 import ast
 
 urlTaipei = 'http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=8f2e2264-6eab-451f-a66d-34aa2a0aa7b1'
@@ -32,6 +32,7 @@ class Truck(object):
     	, garbage_sun, garbage_mon, garbage_tue, garbage_wed, garbage_thu, garbage_fri, garbage_sat
     	, recycling_sun, recycling_mon, recycling_tue, recycling_wed, recycling_thu, recycling_fri, recycling_sat
     	, foodscraps_sun, foodscraps_mon, foodscraps_tue, foodscraps_wed, foodscraps_thu, foodscraps_fri, foodscraps_sat
+    	, sun, mon, tue, wed, thu, fri, sat
     	, location
     	):
         self.city = city
@@ -64,6 +65,13 @@ class Truck(object):
         self.foodscraps_thu = foodscraps_thu
         self.foodscraps_fri = foodscraps_fri
         self.foodscraps_sat = foodscraps_sat
+        self.sun = sun
+        self.mon = mon
+        self.tue = tue
+        self.wed = wed
+        self.thu = thu
+        self.fri = fri
+        self.sat = sat
         self.location = location
 
 class Location(object):
@@ -74,11 +82,15 @@ class Location(object):
 Trucks = []
 
 ## Taipei
+'''
 response = urllib2.urlopen(urlTaipei).read().decode('utf8')
 
 data = json.loads(response)
 
 items = data["result"]["results"]
+'''
+response = requests.get(urlTaipei)
+items = response.json()["result"]["results"]
 
 for item in items:
 	carTime=item['CarTime'].replace(u'：',':')
@@ -86,6 +98,7 @@ for item in items:
 	locationString=ast.literal_eval('{"__type": "GeoPoint", "longitude":' + str(float(item['Lng'])) + ',"latitude":' + str(float(item['Lat'])) + ' }')
 	t = Truck('Taipei',item['Address'][3:6] #,item['Region']
 		,item['Address'],'',item['CarNo'],item['CarNumber'],item['CarTime'],strHour,item['DepName']
+		,'N','Y','Y','N','Y','Y','Y'
 		,'N','Y','Y','N','Y','Y','Y'
 		,'N','Y','Y','N','Y','Y','Y'
 		,'N','Y','Y','N','Y','Y','Y'
@@ -98,9 +111,12 @@ for item in items:
 for top in urlNewTaipeiList:
 	url = urlNewTaipei + top
 	print url
+	response = requests.get(url)
+	items = response.json()
+	'''
 	response = urllib2.urlopen(url).read().decode('utf8')
 	items = json.loads(response)
-
+	'''
 	#import data
 	for item in items:
 		strHour=str(int(item['time'][0:item['time'].index(':')]))
@@ -114,6 +130,43 @@ for top in urlNewTaipeiList:
 			print item['village']+' '+item['time']+ ' ' +str(longitude) + ' ' + str(latitude) 
 
 		locationString=ast.literal_eval('{"__type": "GeoPoint", "longitude":' + str(longitude) + ',"latitude":' + str(latitude) + ' }')
+
+
+		if item['garbage_sun'] == 'Y' or item['recycling_sun'] == 'Y' or item['foodscraps_sun'] == 'Y': 
+			sun = 'Y' 
+		else: 
+			sun = 'N'
+
+		if item['garbage_mon'] == 'Y' or item['recycling_mon'] == 'Y' or item['foodscraps_mon'] == 'Y': 
+			mon = 'Y' 
+		else:
+		 	mon = 'N'
+
+		if item['garbage_tue'] == 'Y' or item['recycling_tue'] == 'Y' or item['foodscraps_tue'] == 'Y': 
+			tue = 'Y' 
+		else: 
+			tue = 'N'
+
+		if item['garbage_wed'] == 'Y' or item['recycling_wed'] == 'Y' or item['foodscraps_wed'] == 'Y': 
+			wed = 'Y' 
+		else: 
+			wed = 'N'
+
+		if item['garbage_thu'] == 'Y' or item['recycling_thu'] == 'Y' or item['foodscraps_thu'] == 'Y': 
+			thu = 'Y' 
+		else: 
+			thu = 'N'
+
+		if item['garbage_fri'] == 'Y' or item['recycling_fri'] == 'Y' or item['foodscraps_fri'] == 'Y': 
+			fri = 'Y' 
+		else:
+		 	fri = 'N'
+
+		if item['garbage_sat'] == 'Y' or item['recycling_sat'] == 'Y' or item['foodscraps_sat'] == 'Y': 
+			sat = 'Y' 
+		else: 
+			sat = 'N'
+
 
 		t = Truck('NewTaipei',item['city'],item['name'],item['lineid'],item['linename'],item['rank'],item['time'],strHour,item['memo']
 			,(item['garbage_sun'] if item['garbage_sun']=='Y' else 'N')
@@ -137,7 +190,14 @@ for top in urlNewTaipeiList:
 			,(item['foodscraps_thu'] if item['foodscraps_thu']=='Y' else 'N')
 			,(item['foodscraps_fri'] if item['foodscraps_fri']=='Y' else 'N')
 			,(item['foodscraps_sat'] if item['foodscraps_sat']=='Y' else 'N')
-			, locationString
+			,sun
+			,mon
+			,tue
+			,wed
+			,thu
+			,fri
+			,sat
+			,locationString
 			)
 		jsonStringTruck = json.dumps(t.__dict__, ensure_ascii=False)
 		Trucks.append(ast.literal_eval(jsonStringTruck))
