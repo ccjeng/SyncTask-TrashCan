@@ -1,9 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-#import codecs, json ,httplib
-#import urllib2
-
 import requests
 import json
 import codecs
@@ -24,7 +21,7 @@ class TrashCan(object):
 
 TrashCans = []
 
-for key, value in dict.iteritems():
+for key, value in dict.items():
 
     url = root + value
 
