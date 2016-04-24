@@ -82,13 +82,7 @@ class Location(object):
 Trucks = []
 
 ## Taipei
-'''
-response = urllib2.urlopen(urlTaipei).read().decode('utf8')
-
-data = json.loads(response)
-
-items = data["result"]["results"]
-'''
+print urlTaipei
 response = requests.get(urlTaipei)
 items = response.json()["result"]["results"]
 
@@ -97,7 +91,7 @@ for item in items:
 	strHour=str(int(carTime[0:carTime.index(':')]))
 	locationString=ast.literal_eval('{"__type": "GeoPoint", "longitude":' + str(float(item['Lng'])) + ',"latitude":' + str(float(item['Lat'])) + ' }')
 	t = Truck('Taipei',item['Address'][3:6] #,item['Region']
-		,item['Address'],'',item['CarNo'],item['CarNumber'],item['CarTime'],strHour,item['DepName']
+		,item['Address'],'',item['CarNo'],item['CarNumber'],item['CarTime'],strHour,''
 		,'N','Y','Y','N','Y','Y','Y'
 		,'N','Y','Y','N','Y','Y','Y'
 		,'N','Y','Y','N','Y','Y','Y'
@@ -113,10 +107,7 @@ for top in urlNewTaipeiList:
 	print url
 	response = requests.get(url)
 	items = response.json()
-	'''
-	response = urllib2.urlopen(url).read().decode('utf8')
-	items = json.loads(response)
-	'''
+
 	#import data
 	for item in items:
 		strHour=str(int(item['time'][0:item['time'].index(':')]))
