@@ -81,12 +81,15 @@ class Location(object):
 
 Trucks = []
 
+count = 0;
+
 ## Taipei
-print urlTaipei
+print(urlTaipei)
 response = requests.get(urlTaipei)
 items = response.json()["result"]["results"]
 
 for item in items:
+	count = count + 1;
 	carTime=item['CarTime'].replace(u'：',':')
 	strHour=str(int(carTime[0:carTime.index(':')]))
 	locationString=ast.literal_eval('{"__type": "GeoPoint", "longitude":' + str(float(item['Lng'])) + ',"latitude":' + str(float(item['Lat'])) + ' }')
@@ -104,12 +107,13 @@ for item in items:
 # New Taipei
 for top in urlNewTaipeiList:
 	url = urlNewTaipei + top
-	print url
+	print(url)
 	response = requests.get(url)
 	items = response.json()
 
 	#import data
 	for item in items:
+		count = count + 1;
 		strHour=str(int(item['time'][0:item['time'].index(':')]))
 
 		longitude=float(item['longitude'])
@@ -192,6 +196,8 @@ for top in urlNewTaipeiList:
 			)
 		jsonStringTruck = json.dumps(t.__dict__, ensure_ascii=False)
 		Trucks.append(ast.literal_eval(jsonStringTruck))
+
+print('Total Count = ' + str(count))
 
 json_string = '{"results":' + json.dumps(Trucks, ensure_ascii=False) + '}'
 
