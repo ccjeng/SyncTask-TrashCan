@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 import codecs, json
 import requests
@@ -8,18 +8,18 @@ import ast
 urlTaipei = 'http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=8f2e2264-6eab-451f-a66d-34aa2a0aa7b1'
 urlNewTaipei = 'http://data.ntpc.gov.tw/od/data/api/EDC3AD26-8AE7-4916-A00B-BC6048D19BF8?$format=json'
 
-urlNewTaipeiList = ['&$top=2000' #1~2000
-, '&$top=2000&$skip=2000' #2000~4000
-, '&$top=2000&$skip=4000' #4000~6000
-, '&$top=2000&$skip=6000'
-, '&$top=2000&$skip=8000'
-, '&$top=2000&$skip=10000'
-, '&$top=2000&$skip=12000'
-, '&$top=2000&$skip=14000'
-, '&$top=2000&$skip=16000'
-, '&$top=2000&$skip=18000'
-, '&$top=2000&$skip=20000'
-, '&$top=2000&$skip=22000'
+urlNewTaipeiList = [#'&$top=2000' #1~2000
+#, '&$top=2000&$skip=2000' #2000~4000
+#, '&$top=2000&$skip=4000' #4000~6000
+#, '&$top=2000&$skip=6000'
+#, '&$top=2000&$skip=8000'
+#, '&$top=2000&$skip=10000'
+#, '&$top=2000&$skip=12000'
+#, '&$top=2000&$skip=14000'
+#, '&$top=2000&$skip=16000'
+#, '&$top=2000&$skip=18000'
+#, '&$top=2000&$skip=20000'
+ '&$top=2000&$skip=22000'
 , '&$top=2000&$skip=24000'
 , '&$top=2000&$skip=26000'
 , '&$top=2000&$skip=28000'
@@ -84,6 +84,7 @@ Trucks = []
 count = 0;
 
 ## Taipei
+'''
 print(urlTaipei)
 response = requests.get(urlTaipei)
 items = response.json()["result"]["results"]
@@ -103,8 +104,9 @@ for item in items:
 		)
 	jsonStringTruck = json.dumps(t.__dict__, ensure_ascii=False)
 	Trucks.append(ast.literal_eval(jsonStringTruck))
-
+'''
 # New Taipei
+
 for top in urlNewTaipeiList:
 	url = urlNewTaipei + top
 	print(url)
@@ -122,44 +124,44 @@ for top in urlNewTaipeiList:
 		if latitude>100:
 			longitude=float(item['latitude'])
 			latitude=float(item['longitude'])
-			print item['village']+' '+item['time']+ ' ' +str(longitude) + ' ' + str(latitude) 
+			print item['village']+' '+item['time']+ ' ' +str(longitude) + ' ' + str(latitude)
 
 		locationString=ast.literal_eval('{"__type": "GeoPoint", "longitude":' + str(longitude) + ',"latitude":' + str(latitude) + ' }')
 
 
-		if item['garbage_sun'] == 'Y' or item['recycling_sun'] == 'Y' or item['foodscraps_sun'] == 'Y': 
-			sun = 'Y' 
-		else: 
+		if item['garbage_sun'] == 'Y' or item['recycling_sun'] == 'Y' or item['foodscraps_sun'] == 'Y':
+			sun = 'Y'
+		else:
 			sun = 'N'
 
-		if item['garbage_mon'] == 'Y' or item['recycling_mon'] == 'Y' or item['foodscraps_mon'] == 'Y': 
-			mon = 'Y' 
+		if item['garbage_mon'] == 'Y' or item['recycling_mon'] == 'Y' or item['foodscraps_mon'] == 'Y':
+			mon = 'Y'
 		else:
 		 	mon = 'N'
 
-		if item['garbage_tue'] == 'Y' or item['recycling_tue'] == 'Y' or item['foodscraps_tue'] == 'Y': 
-			tue = 'Y' 
-		else: 
+		if item['garbage_tue'] == 'Y' or item['recycling_tue'] == 'Y' or item['foodscraps_tue'] == 'Y':
+			tue = 'Y'
+		else:
 			tue = 'N'
 
-		if item['garbage_wed'] == 'Y' or item['recycling_wed'] == 'Y' or item['foodscraps_wed'] == 'Y': 
-			wed = 'Y' 
-		else: 
+		if item['garbage_wed'] == 'Y' or item['recycling_wed'] == 'Y' or item['foodscraps_wed'] == 'Y':
+			wed = 'Y'
+		else:
 			wed = 'N'
 
-		if item['garbage_thu'] == 'Y' or item['recycling_thu'] == 'Y' or item['foodscraps_thu'] == 'Y': 
-			thu = 'Y' 
-		else: 
+		if item['garbage_thu'] == 'Y' or item['recycling_thu'] == 'Y' or item['foodscraps_thu'] == 'Y':
+			thu = 'Y'
+		else:
 			thu = 'N'
 
-		if item['garbage_fri'] == 'Y' or item['recycling_fri'] == 'Y' or item['foodscraps_fri'] == 'Y': 
-			fri = 'Y' 
+		if item['garbage_fri'] == 'Y' or item['recycling_fri'] == 'Y' or item['foodscraps_fri'] == 'Y':
+			fri = 'Y'
 		else:
 		 	fri = 'N'
 
-		if item['garbage_sat'] == 'Y' or item['recycling_sat'] == 'Y' or item['foodscraps_sat'] == 'Y': 
-			sat = 'Y' 
-		else: 
+		if item['garbage_sat'] == 'Y' or item['recycling_sat'] == 'Y' or item['foodscraps_sat'] == 'Y':
+			sat = 'Y'
+		else:
 			sat = 'N'
 
 
@@ -197,12 +199,14 @@ for top in urlNewTaipeiList:
 		jsonStringTruck = json.dumps(t.__dict__, ensure_ascii=False)
 		Trucks.append(ast.literal_eval(jsonStringTruck))
 
+
 print('Total Count = ' + str(count))
 
 json_string = '{"results":' + json.dumps(Trucks, ensure_ascii=False) + '}'
 
+
 #Write to Json File
-with codecs.open("TPE.json", "w") as outfile:
+with codecs.open("TPENew3.json", "w") as outfile:
 	outfile.write(json_string)
 	#outfile.write(json_string.decode('utf8'))
 	#json_string #.decode('unicode-escape').encode('utf8')
