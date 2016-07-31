@@ -8,18 +8,18 @@ import ast
 urlTaipei = 'http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=8f2e2264-6eab-451f-a66d-34aa2a0aa7b1'
 urlNewTaipei = 'http://data.ntpc.gov.tw/od/data/api/EDC3AD26-8AE7-4916-A00B-BC6048D19BF8?$format=json'
 
-urlNewTaipeiList = [#'&$top=2000' #1~2000
-#, '&$top=2000&$skip=2000' #2000~4000
-#, '&$top=2000&$skip=4000' #4000~6000
-#, '&$top=2000&$skip=6000'
-#, '&$top=2000&$skip=8000'
-#, '&$top=2000&$skip=10000'
-#, '&$top=2000&$skip=12000'
-#, '&$top=2000&$skip=14000'
-#, '&$top=2000&$skip=16000'
-#, '&$top=2000&$skip=18000'
-#, '&$top=2000&$skip=20000'
- '&$top=2000&$skip=22000'
+urlNewTaipeiList = ['&$top=2000' #1~2000
+, '&$top=2000&$skip=2000' #2000~4000
+, '&$top=2000&$skip=4000' #4000~6000
+, '&$top=2000&$skip=6000'
+, '&$top=2000&$skip=8000'
+, '&$top=2000&$skip=10000'
+, '&$top=2000&$skip=12000'
+, '&$top=2000&$skip=14000'
+, '&$top=2000&$skip=16000'
+, '&$top=2000&$skip=18000'
+, '&$top=2000&$skip=20000'
+, '&$top=2000&$skip=22000'
 , '&$top=2000&$skip=24000'
 , '&$top=2000&$skip=26000'
 , '&$top=2000&$skip=28000'
@@ -84,7 +84,6 @@ Trucks = []
 count = 0;
 
 ## Taipei
-'''
 print(urlTaipei)
 response = requests.get(urlTaipei)
 items = response.json()["result"]["results"]
@@ -104,9 +103,8 @@ for item in items:
 		)
 	jsonStringTruck = json.dumps(t.__dict__, ensure_ascii=False)
 	Trucks.append(ast.literal_eval(jsonStringTruck))
-'''
-# New Taipei
 
+# New Taipei
 for top in urlNewTaipeiList:
 	url = urlNewTaipei + top
 	print(url)
@@ -121,6 +119,7 @@ for top in urlNewTaipeiList:
 		longitude=float(item['longitude'])
 		latitude=float(item['latitude'])
 		#Fix error location data
+
 		if latitude>100:
 			longitude=float(item['latitude'])
 			latitude=float(item['longitude'])
@@ -206,7 +205,7 @@ json_string = '{"results":' + json.dumps(Trucks, ensure_ascii=False) + '}'
 
 
 #Write to Json File
-with codecs.open("TPENew3.json", "w") as outfile:
+with codecs.open("TPE20160730.json", "w") as outfile:
 	outfile.write(json_string)
 	#outfile.write(json_string.decode('utf8'))
 	#json_string #.decode('unicode-escape').encode('utf8')
