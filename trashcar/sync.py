@@ -94,7 +94,7 @@ for item in items:
 	strHour=str(int(carTime[0:carTime.index(':')]))
 	locationString=ast.literal_eval('{"__type": "GeoPoint", "longitude":' + str(float(item['Lng'])) + ',"latitude":' + str(float(item['Lat'])) + ' }')
 	t = Truck('Taipei',item['Address'][3:6] #,item['Region']
-		,item['Address'],'',item['CarNo'],item['CarNumber'],item['CarTime'],strHour,''
+		,item['Address'],'',item['CarNo'],item['CarNumber'],item['CarTime'].replace(' ',''),strHour,''
 		,'N','Y','Y','N','Y','Y','Y'
 		,'N','Y','Y','N','Y','Y','Y'
 		,'N','Y','Y','N','Y','Y','Y'
@@ -123,7 +123,7 @@ for top in urlNewTaipeiList:
 		if latitude>100:
 			longitude=float(item['latitude'])
 			latitude=float(item['longitude'])
-			print item['village']+' '+item['time']+ ' ' +str(longitude) + ' ' + str(latitude)
+			print(item['village']+' '+item['time']+ ' ' +str(longitude) + ' ' + str(latitude))
 
 		locationString=ast.literal_eval('{"__type": "GeoPoint", "longitude":' + str(longitude) + ',"latitude":' + str(latitude) + ' }')
 
@@ -205,7 +205,7 @@ json_string = '{"results":' + json.dumps(Trucks, ensure_ascii=False) + '}'
 
 
 #Write to Json File
-with codecs.open("TPE20160814.json", "w") as outfile:
+with codecs.open("TPE20160828.json", "w") as outfile:
 	outfile.write(json_string)
 	#outfile.write(json_string.decode('utf8'))
 	#json_string #.decode('unicode-escape').encode('utf8')
