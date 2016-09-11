@@ -5,6 +5,18 @@ import codecs, json
 import requests
 import ast
 
+def checkCarTimeValue(time, num):
+	if '-' in time:
+		time = time.split('-')[num]
+	else:
+		if '~' in time:
+			time = time.split('~')[num]
+	time = time.replace('：', '').replace(':','')
+	try:
+		val = int(time)
+	except ValueError:
+		print("not an int! "  + time)
+
 urlTaipei = 'http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=8f2e2264-6eab-451f-a66d-34aa2a0aa7b1'
 urlNewTaipei = 'http://data.ntpc.gov.tw/od/data/api/EDC3AD26-8AE7-4916-A00B-BC6048D19BF8?$format=json'
 
@@ -93,8 +105,13 @@ for item in items:
 	carTime=item['CarTime'].replace(u'：',':')
 	strHour=str(int(carTime[0:carTime.index(':')]))
 	locationString=ast.literal_eval('{"__type": "GeoPoint", "longitude":' + str(float(item['Lng'])) + ',"latitude":' + str(float(item['Lat'])) + ' }')
+	timeString=item['CarTime'].replace(' ','').replace('(一.五各收1次)','')
+
+	#verfy time format
+	checkCarTimeValue(timeString,0)
+	checkCarTimeValue(timeString,1)
 	t = Truck('Taipei',item['Address'][3:6] #,item['Region']
-		,item['Address'],'',item['CarNo'],item['CarNumber'],item['CarTime'].replace(' ',''),strHour,''
+		,item['Address'],'',item['CarNo'],item['CarNumber'],timeString,strHour,''
 		,'N','Y','Y','N','Y','Y','Y'
 		,'N','Y','Y','N','Y','Y','Y'
 		,'N','Y','Y','N','Y','Y','Y'
@@ -163,6 +180,9 @@ for top in urlNewTaipeiList:
 		else:
 			sat = 'N'
 
+		#verfy time format
+		checkCarTimeValue(item['time'],0)
+		checkCarTimeValue(item['time'],1)
 
 		t = Truck('NewTaipei',item['city'],item['name'],item['lineid'],item['linename'],item['rank'],item['time'],strHour,item['memo']
 			,(item['garbage_sun'] if item['garbage_sun']=='Y' else 'N')
@@ -205,7 +225,9 @@ json_string = '{"results":' + json.dumps(Trucks, ensure_ascii=False) + '}'
 
 
 #Write to Json File
-with codecs.open("TPE20160828.json", "w") as outfile:
+with codecs.open("TPE20160911.json", "w") as outfile:
 	outfile.write(json_string)
 	#outfile.write(json_string.decode('utf8'))
 	#json_string #.decode('unicode-escape').encode('utf8')
+
+
