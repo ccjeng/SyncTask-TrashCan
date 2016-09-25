@@ -134,7 +134,7 @@ for top in urlNewTaipeiList:
 		strHour=str(int(item['time'][0:item['time'].index(':')]))
 
 		longitude=float(item['longitude'])
-		latitude=float(item['latitude'])
+		latitude=float(item['latitude'].replace('25.06245246044742, 121','25.06245246044742'))
 		#Fix error location data
 
 		if latitude>100:
@@ -225,7 +225,7 @@ json_string = '{"results":' + json.dumps(Trucks, ensure_ascii=False) + '}'
 
 
 #Write to Json File
-with codecs.open("TPE20160911.json", "w") as outfile:
+with codecs.open("TPE20160925.json", "w") as outfile:
 	outfile.write(json_string)
 	#outfile.write(json_string.decode('utf8'))
 	#json_string #.decode('unicode-escape').encode('utf8')
