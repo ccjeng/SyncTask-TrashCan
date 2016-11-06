@@ -104,7 +104,16 @@ for item in items:
 	count = count + 1;
 	carTime=item['CarTime'].replace(u'：',':')
 	strHour=str(int(carTime[0:carTime.index(':')]))
-	locationString=ast.literal_eval('{"__type": "GeoPoint", "longitude":' + str(float(item['Lng'])) + ',"latitude":' + str(float(item['Lat'])) + ' }')
+
+	longitude=float(item['Lng'])
+	latitude=float(item['Lat'])
+
+	if latitude>100: # 台北市士林區平菁街95巷 25.1327893,121.5768134
+		print(carTime + ' ' + strHour + ' ' + str(longitude) + ' ' + str(latitude))
+		latitude=25.1327893
+		#print(item['Address'] + ' ' + item['CarNo'] + ' ' + item['CarNumber'])
+
+	locationString=ast.literal_eval('{"__type": "GeoPoint", "longitude":' + str(longitude) + ',"latitude":' + str(latitude) + ' }')
 	timeString=item['CarTime'].replace(' ','').replace('(一.五各收1次)','')
 
 	#verfy time format
@@ -225,7 +234,7 @@ json_string = '{"results":' + json.dumps(Trucks, ensure_ascii=False) + '}'
 
 
 #Write to Json File
-with codecs.open("TPE20161023.json", "w") as outfile:
+with codecs.open("TPE20161106.json", "w") as outfile:
 	outfile.write(json_string)
 	#outfile.write(json_string.decode('utf8'))
 	#json_string #.decode('unicode-escape').encode('utf8')
