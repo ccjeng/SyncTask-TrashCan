@@ -35,7 +35,7 @@ urlNewTaipeiList = ['&$top=2000' #1~2000
 , '&$top=2000&$skip=24000'
 , '&$top=2000&$skip=26000'
 , '&$top=2000&$skip=28000'
-, '&$top=2000&$skip=30000' #30000~32000
+#, '&$top=2000&$skip=30000' #30000~32000
 ]
 
 
@@ -234,7 +234,7 @@ json_string = '{"results":' + json.dumps(Trucks, ensure_ascii=False) + '}'
 
 
 #Write to Json File
-with codecs.open("TPE20161203.json", "w") as outfile:
+with codecs.open("TPE20170320.json", "w") as outfile:
 	outfile.write(json_string)
 	#outfile.write(json_string.decode('utf8'))
 	#json_string #.decode('unicode-escape').encode('utf8')
