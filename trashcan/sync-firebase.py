@@ -39,16 +39,16 @@ for key, value in dict.items():
     items = response.json()["result"]["results"]
 
     for item in items:
-        if not item[u'緯度'].strip() == '':
+        if not item[u'緯度'] == None:
             t = TrashCan(key, item[u'路名'] + item[u'段、號及其他註明']
-            , str(float(item[u'緯度'].replace(',', '').replace('25.02.49', '25.0249')))
-            , str(float(item[u'經度'].replace('121.566.489', '121.566489').replace('121.33.28', '121.3328').replace('121..549132', '121.549132')))
+            , str(float(item[u'緯度']))
+            , str(float(item[u'經度'].replace('121.566.489','121.566489')))
                          )
             jsonStringTruck = json.dumps(t.__dict__, ensure_ascii=False)
             TrashCans.append(ast.literal_eval(jsonStringTruck))
             count = count + 1
         else:
-            print(item[u'路名'] + '-' + item[u'緯度'] + '-' +item[u'經度'])
+            print(item[u'路名'] + '-' +item[u'段、號及其他註明'])
 
 print('Total Count = ' + str(count))
 

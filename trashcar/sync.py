@@ -17,7 +17,8 @@ def checkCarTimeValue(time, num):
 	except ValueError:
 		print("not an int! "  + time)
 
-urlTaipei = 'http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=8f2e2264-6eab-451f-a66d-34aa2a0aa7b1'
+#urlTaipei = 'http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=8f2e2264-6eab-451f-a66d-34aa2a0aa7b1'
+urlTaipei = 'http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=aa9c657c-ea6f-4062-a645-b6c973d45564'
 urlNewTaipei = 'http://data.ntpc.gov.tw/od/data/api/EDC3AD26-8AE7-4916-A00B-BC6048D19BF8?$format=json'
 
 urlNewTaipeiList = ['&$top=2000' #1~2000
@@ -34,10 +35,9 @@ urlNewTaipeiList = ['&$top=2000' #1~2000
 , '&$top=2000&$skip=22000'
 , '&$top=2000&$skip=24000'
 , '&$top=2000&$skip=26000'
-, '&$top=2000&$skip=28000'
+#, '&$top=2000&$skip=28000'
 #, '&$top=2000&$skip=30000' #30000~32000
 ]
-
 
 class Truck(object):
     def __init__(self, city, region, address, lineid, line, carno, time, hour, memo
@@ -96,6 +96,7 @@ Trucks = []
 count = 0;
 
 ## Taipei
+
 print(urlTaipei)
 response = requests.get(urlTaipei)
 items = response.json()["result"]["results"]
@@ -148,13 +149,17 @@ for top in urlNewTaipeiList:
 		count = count + 1;
 		strHour=str(int(item['time'][0:item['time'].index(':')]))
 
-		longitude=float(item['longitude'])
+		if item['longitude'] == '':
+			longitude=0
+		else:	
+			longitude=float(item['longitude'])
+
 		latitude=float(item['latitude'].replace('25.06245246044742, 121','25.06245246044742'))
 		#Fix error location data
 
 		if latitude>100:
 			longitude=float(item['latitude'])
-			latitude=float(item['longitude'])
+			latitude=longitude
 			print(item['village']+' '+item['time']+ ' ' +str(longitude) + ' ' + str(latitude))
 
 		locationString=ast.literal_eval('{"__type": "GeoPoint", "longitude":' + str(longitude) + ',"latitude":' + str(latitude) + ' }')
@@ -239,7 +244,7 @@ json_string = '{"results":' + json.dumps(Trucks, ensure_ascii=False) + '}'
 
 
 #Write to Json File
-with codecs.open("TPE20180318.json", "w") as outfile:
+with codecs.open("TPE20180408.json", "w") as outfile:
 	outfile.write(json_string)
 	#outfile.write(json_string.decode('utf8'))
 	#json_string #.decode('unicode-escape').encode('utf8')
