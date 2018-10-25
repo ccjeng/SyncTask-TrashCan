@@ -4,6 +4,8 @@
 import codecs, json
 import requests
 import ast
+import xml.etree.ElementTree as ET
+from decimal import Decimal
 
 def checkCarTimeValue(time, num):
 	if '-' in time:
@@ -17,8 +19,7 @@ def checkCarTimeValue(time, num):
 	except ValueError:
 		print("not an int! "  + time)
 
-#urlTaipei = 'http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=8f2e2264-6eab-451f-a66d-34aa2a0aa7b1'
-urlTaipei = 'http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=aa9c657c-ea6f-4062-a645-b6c973d45564'
+urlTaipei = 'http://www.dep-in.gov.taipei/epb/webservice/webservice.asmx/GetTrash'
 urlNewTaipei = 'http://data.ntpc.gov.tw/od/data/api/EDC3AD26-8AE7-4916-A00B-BC6048D19BF8?$format=json'
 
 urlNewTaipeiList = ['&$top=2000' #1~2000
@@ -98,44 +99,63 @@ count = 0;
 ## Taipei
 
 print(urlTaipei)
+
 response = requests.get(urlTaipei)
-items = response.json()["result"]["results"]
+tree = ET.fromstring(response.text)
 
-for item in items:
-	count = count + 1;
-	carTimeStart = item['CarTimeStart']
-	carTimeEnd = item['CarTimeEnd']
-	if carTimeEnd == '':
-		carTimeEnd = carTimeStart
-	timeString= carTimeStart[:2] + ':' + carTimeStart[2:4] + '-' + carTimeEnd[:2] + ':' + carTimeEnd[2:4]
-	strHour=str(int(carTimeStart[:2]))
+for elem in tree.findall('.//NewDataSet/Table'):
+	count = count + 1
+	for e in elem.findall('.'):
+		unit=e.find('Unit').text
+		title=e.find('Title').text
+		content=e.find('Content').text
+		lng=e.find('Lng').text
+		lat=e.find('Lat').text
+		modifyDate=e.find('ModifyDate').text
+		timeString= content.split("，")[2].replace('時間：','').replace('~','-').replace('(一.五各收1次)','').replace(' ','')
+		carTimeStart = timeString.split('-')[0]
+		carTimeEnd = timeString.split('-')[1]
+		carNo = content.split("，")[0].replace('車號：','')
+		carNumber = content.split("，")[1].replace('車次：','')	
+		#print(title + timeString + "-" + carTimeStart + "-" + carTimeEnd + "-" + carNo +  "-" +  carNumber)
+		if carTimeEnd == '':
+			carTimeEnd = carTimeStart
+		strHour=str(int(carTimeStart[:2]))
+		longitude=Decimal(lng)
+		latitude=Decimal(lat)
+		carAddress=title.replace('垃圾清運點：','')
+		carRegion=carAddress[3:6]	
 
-	longitude=float(item['Lng'])
-	latitude=float(item['Lat'])
-
-	#print(carTimeStart + ' ' + carTimeEnd + '  --' + strHour + ' -- ' + timeString)
-
-	if latitude>100: # 台北市士林區平菁街95巷 25.1327893,121.5768134
-		print(timeString + ' ' + strHour + ' ' + str(longitude) + ' ' + str(latitude))
-		latitude=25.1327893
+		if latitude>100: # 台北市士林區平菁街95巷 25.1327893,121.5768134
+			print(timeString + ' ' + strHour + ' ' + str(longitude) + ' ' + str(latitude))
+			latitude=25.1327893
 		#print(item['Address'] + ' ' + item['CarNo'] + ' ' + item['CarNumber'])
 
-	locationString=ast.literal_eval('{"__type": "GeoPoint", "longitude":' + str(longitude) + ',"latitude":' + str(latitude) + ' }')
-	#timeString=item['CarTime'].replace(' ','').replace('(一.五各收1次)','')
+		#print(carRegion + "-" + carAddress + "-" + strHour + "-" + carTimeStart + "-" + carTimeEnd)
+		# 2, 4, 6
+		if "(一.五各收1次)" in content: 
+			print(content)
+			str246 = "N"
+			strMemo = "一.五各收1次"	
+		else:
+			str246 = "Y"
+			strMemo = ""
+		locationString=ast.literal_eval('{"__type": "GeoPoint", "longitude":' + str(longitude) + ',"latitude":' + str(latitude) + ' }')
 
-	#verfy time format
-	checkCarTimeValue(timeString,0)
-	checkCarTimeValue(timeString,1)
-	t = Truck('Taipei',item['Address'][3:6] #,item['Region']
-		,item['Address'],'',item['CarNo'],item['CarNumber'],timeString,strHour,''
-		,'N','Y','Y','N','Y','Y','Y'
-		,'N','Y','Y','N','Y','Y','Y'
-		,'N','Y','Y','N','Y','Y','Y'
-		,'N','Y','Y','N','Y','Y','Y'
-		, locationString
-		)
-	jsonStringTruck = json.dumps(t.__dict__, ensure_ascii=False)
-	Trucks.append(ast.literal_eval(jsonStringTruck))
+		#verfy time format
+		checkCarTimeValue(timeString,0)
+		checkCarTimeValue(timeString,1)
+		t = Truck('Taipei',carRegion
+			,carAddress,'',carNo, carNumber, timeString, strHour, strMemo
+			,'N','Y',str246,'N',str246,'Y',str246
+			,'N','Y',str246,'N',str246,'Y',str246
+			,'N','Y',str246,'N',str246,'Y',str246
+			,'N','Y',str246,'N',str246,'Y',str246
+			, locationString
+			)
+		jsonStringTruck = json.dumps(t.__dict__, ensure_ascii=False)
+		Trucks.append(ast.literal_eval(jsonStringTruck))
+
 
 # New Taipei
 for top in urlNewTaipeiList:
@@ -244,7 +264,7 @@ json_string = '{"results":' + json.dumps(Trucks, ensure_ascii=False) + '}'
 
 
 #Write to Json File
-with codecs.open("TPE20180408.json", "w") as outfile:
+with codecs.open("TPE2018test.json", "w") as outfile:
 	outfile.write(json_string)
 	#outfile.write(json_string.decode('utf8'))
 	#json_string #.decode('unicode-escape').encode('utf8')
