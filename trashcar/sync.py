@@ -178,11 +178,11 @@ for top in urlNewTaipeiList:
 		#Fix error location data
 
 		if latitude>100:
+			print(item['village']+' '+item['time']+ ' ' +str(longitude) + ' ' + str(latitude))
 			longitude=float(item['latitude'])
 			latitude=longitude
-			print(item['village']+' '+item['time']+ ' ' +str(longitude) + ' ' + str(latitude))
-
-		locationString=ast.literal_eval('{"__type": "GeoPoint", "longitude":' + str(longitude) + ',"latitude":' + str(latitude) + ' }')
+		else:
+			locationString=ast.literal_eval('{"__type": "GeoPoint", "longitude":' + str(longitude) + ',"latitude":' + str(latitude) + ' }')
 
 
 		if item['garbage_sun'] == 'Y' or item['recycling_sun'] == 'Y' or item['foodscraps_sun'] == 'Y':
@@ -264,7 +264,7 @@ json_string = '{"results":' + json.dumps(Trucks, ensure_ascii=False) + '}'
 
 
 #Write to Json File
-with codecs.open("TPE2018test.json", "w") as outfile:
+with codecs.open("TPE20191024.json", "w") as outfile:
 	outfile.write(json_string)
 	#outfile.write(json_string.decode('utf8'))
 	#json_string #.decode('unicode-escape').encode('utf8')

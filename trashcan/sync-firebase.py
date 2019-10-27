@@ -39,7 +39,7 @@ for key, value in dict.items():
     items = response.json()["result"]["results"]
 
     for item in items:
-        if not item[u'緯度'] == None:
+        if not item[u'緯度'] == None and str(item[u'緯度']) != "":
             t = TrashCan(key, item[u'路名'] + item[u'段、號及其他註明']
             , str(float(item[u'緯度']))
             , str(float(item[u'經度'].replace('121.566.489','121.566489')))
