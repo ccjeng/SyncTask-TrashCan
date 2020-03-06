@@ -264,7 +264,7 @@ json_string = '{"results":' + json.dumps(Trucks, ensure_ascii=False) + '}'
 
 
 #Write to Json File
-with codecs.open("TPE20191024.json", "w") as outfile:
+with codecs.open("TPE20200301.json", "w") as outfile:
 	outfile.write(json_string)
 	#outfile.write(json_string.decode('utf8'))
 	#json_string #.decode('unicode-escape').encode('utf8')
